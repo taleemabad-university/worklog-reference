@@ -1,0 +1,18 @@
+# Never commit these.
+# .mcp.json holds your Notion token - it must never reach GitHub.
+.env
+*.env
+.mcp.json
+
+# Keys and certificates, in case you add any
+*.pem
+*.key
+credentials.json
+service_account*.json
+
+# Generated at runtime
+records.json
+.job.lock
+.calls.json
+__pycache__/
+*.pyc

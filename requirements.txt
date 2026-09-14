@@ -1,0 +1,6 @@
+# Nothing to install.
+#
+# serve.py, run_once.py, schedule.py, inbox.py and config.py all use the
+# Python standard library only. This file exists so Railway recognises the
+# project as Python and runs it - an empty dependency list is the whole point:
+# a build that installs nothing cannot fail to install something.

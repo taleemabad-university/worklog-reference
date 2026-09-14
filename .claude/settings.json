@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh -c 'for C in python3 python py; do if \"$C\" -c \"import sys\" >/dev/null 2>&1; then exec \"$C\" \"${CLAUDE_PROJECT_DIR:-.}/.claude/hooks/block-env-commit.py\"; fi; done; exit 0'"
+          }
+        ]
+      }
+    ]
+  }
+}
