@@ -375,7 +375,7 @@ python run_once.py --drop
 python run_once.py --demo
 ```
 
-- plain `run_once.py` reads your **real mailbox** (needs Step 0, check 6, **and** a `SUBJECT_FILTER` line in your `.env` — without one it refuses to run, so that it can never read your personal or HR mail by accident)
+- plain `run_once.py` reads your **real mailbox** — first `cp .env.example .env` and fill in the mailbox section (it tells you where to get a Gmail app password), then you need Step 0 check 6 **and** a `SUBJECT_FILTER` line in that `.env` — without one it refuses to run, so that it can never read your personal or HR mail by accident)
 - `--drop` reads any `.txt` file you save into the **`drop/` folder**
 - `--demo` reads the sample transcript
 
@@ -452,7 +452,13 @@ railway variables --set SYNC_TOKEN=pick-something-long-and-random
 railway domain
 ```
 
-Then add two lines to your `.env`, using the URL that printed:
+If you have not made your settings file yet:
+
+```bash
+cp .env.example .env
+```
+
+Open it — it explains every setting and where to get each value. Then fill in these two, using the URL that printed:
 
 ```
 SYNC_URL=https://your-app.up.railway.app
@@ -518,12 +524,15 @@ items = ask_json(prompt, mcp_config=".mcp.json", allow_tools="mcp__notion")
 **✅ Checkpoint:** Prove it fires. Run all three lines — **including the last one**:
 
 ```bash
-echo "NOT_A_REAL_SECRET=test" > .env
-git add -f .env
-git restore --staged .env
+echo "NOT_A_REAL_SECRET=test" > .env.test
+git add -f .env.test
+git restore --staged .env.test
+rm .env.test
 ```
 
-Between the second and third line, ask Claude to commit. **It must be refused.** The third line puts things back; do not skip it.
+Between the second and third line, ask Claude to commit. **It must be refused.** The last two lines put things back; do not skip them.
+
+> Note it says `.env.test`, not `.env`. **Do not test this on your real `.env`** — `>` overwrites the file, and you would wipe the settings you added at Step 7b without noticing. The hook treats both the same.
 
 **It also checks inside your files.** Paste a fake token into a `.py` file and try to commit that — it is refused too. That matters more than the filename check, because your own course audit found hardcoded credentials were the number one problem.
 

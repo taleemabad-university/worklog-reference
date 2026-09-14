@@ -22,6 +22,8 @@ import subprocess
 import tempfile
 import time
 
+import config  # noqa: F401  - reads your .env into os.environ on import
+
 __all__ = ["ask", "ask_json", "ClaudeError", "cli_path"]
 
 # Tools Claude must never use for a plain text/JSON generation call.
