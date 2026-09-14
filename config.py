@@ -43,7 +43,13 @@ def load_env(path: str = ENV_PATH) -> int:
     if not os.path.exists(path):
         return 0
 
+    # Keys that were already in the real environment BEFORE we read the file.
+    # Only these beat the file - that is what lets Railway's variables override
+    # your .env in the cloud. Anything else, the file wins.
+    preset = set(os.environ)
+
     loaded = 0
+    seen_in_file: set[str] = set()
     with open(path, encoding="utf-8", errors="replace") as fh:
         for raw in fh:
             line = raw.strip()
@@ -61,8 +67,18 @@ def load_env(path: str = ENV_PATH) -> int:
                 value = value[1:-1]
             if not key:
                 continue
-            if key in os.environ:        # real environment wins (this is how
-                continue                 # Railway variables override .env)
+            if key in preset:            # the real environment wins (this is
+                continue                 # how Railway variables override .env)
+
+            # Within the file itself, the LAST line wins. This matters: the
+            # template ships with blank placeholders like "SYNC_TOKEN=" near
+            # the top, and people very reasonably add their real value at the
+            # bottom instead of editing the placeholder. If the first line won,
+            # their value would be silently ignored and their page would stay
+            # empty with nothing to explain why.
+            if key in seen_in_file:
+                print(f"note: {key} appears more than once in .env - using the last one.")
+            seen_in_file.add(key)
             os.environ[key] = value
             loaded += 1
     return loaded
