@@ -284,6 +284,15 @@ def check_readme() -> None:
                "cp README.template.md README.md   then make every line true")
         return
     text = open(path, encoding="utf-8", errors="replace").read()
+
+    # If you forked the reference repo, its README is still sitting here.
+    # It describes OUR build, not yours, so it would sail past the blanks
+    # check below and show green on a gate you have not actually done.
+    if "reference build for Final Build Day" in text:
+        record(BAD, 11, "README", "this is still the reference README, not yours",
+               "cp README.template.md README.md   then make every line true")
+        return
+
     todo = len(re.findall(r"\bTODO\b|\bFILL THIS IN\b|_{4,}", text))
     record(OK if todo == 0 else WARN, 11, "README",
            f"{len(text)} chars" + ("" if todo == 0 else f", {todo} blank(s) left"),
